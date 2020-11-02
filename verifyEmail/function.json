@@ -1,0 +1,30 @@
+﻿{
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "name": "message",
+      "apiKey": "SendGridApiKey",
+      "to": "bob@cameronwills.org",
+      "from": "info@pantywylan.org",
+      "subject": "Verify email address",
+      "text": "testing",
+      "direction": "out",
+      "type": "sendGrid"
+    }
+  ],
+  "disabled": false
+}

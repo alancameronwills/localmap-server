@@ -1,0 +1,26 @@
+﻿{
+  "bindings": [
+    {
+      "name": "myTimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 0 5 * * *"
+    },
+    {
+      "type": "table",
+      "name": "inputTable",
+      "tableName": "places",
+      "take": 5000,
+      "connection": "AzureWebJobsStorage",
+      "direction": "in"
+    },
+    {
+      "type": "blob",
+      "name": "$return",
+      "path": "placesbackup/{DateTime}",
+      "connection": "AzureWebJobsStorage",
+      "direction": "out"
+    }
+  ],
+  "disabled": false
+}

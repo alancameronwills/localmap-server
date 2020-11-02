@@ -1,0 +1,28 @@
+﻿{
+  "bindings": [
+    {
+      "name": "myTimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 0 5 * * *"
+    },
+    {
+      "type": "sendGrid",
+      "name": "message",
+      "apiKey": "SendGridApiKey",
+      "to": "span@pantywylan.org",
+      "subject": "Map updates",
+      "direction": "out",
+      "from": "info@span-arts.org.uk"
+    },
+    {
+      "type": "table",
+      "name": "table",
+      "tableName": "places",
+      "take": 5000,
+      "connection": "AzureWebJobsStorage",
+      "direction": "in"
+    }
+  ],
+  "disabled": false
+}

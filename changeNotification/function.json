@@ -1,0 +1,18 @@
+﻿{
+  "bindings": [
+    {
+      "name": "myTimer",
+      "schedule": "0 0 5 * * *",
+      "direction": "in",
+      "type": "timerTrigger"
+    },
+    {
+      "type": "table",
+      "name": "table",
+      "tableName": "places",
+      "take": 5000,
+      "connection": "AzureWebJobsStorage",
+      "direction": "in"
+    }
+  ]
+}

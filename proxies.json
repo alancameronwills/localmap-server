@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json.schemastore.org/proxies",
+    "proxies": {
+        "gen": {
+            "matchCondition": {
+                "route": "/{*file}"
+            },
+            "backendUri": "https://deepmap.blob.core.windows.net/deepmap/{file}"
+        },
+        "api": {
+            "matchCondition": {
+                "route": "/api/{file}"
+            },
+            "backendUri": "https://localhost/api/{file}"
+        },
+        "root": {
+            "matchCondition": {
+                "route": "/"
+            },
+            "backendUri": "https://deepmap.blob.core.windows.net/deepmap/index.html"
+        }
+    }
+}
