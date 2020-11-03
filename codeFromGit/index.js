@@ -42,9 +42,10 @@ async function transferToBlob(context, name) {
         fetch(filePath)
             .then(response => {
                 try {
-                    let contentType = response.headers.get("Content-Type");
+                    let downloadType = response.headers.get("Content-Type");
+                    let contentType = mime(name);
                     let contentLength = response.headers.get("Content-Length");
-                    context.log(`Transfer ${name} type: ${contentType}  length: ${contentLength}`);
+                    context.log(`Transfer ${name} type: ${contentType}  length: ${contentLength} download: ${downloadType}`);
                     if (contentType.startsWith("image")) {
                         blobService.createBlockBlobFromStream("deepmap", name, response.body,
                             contentLength,
