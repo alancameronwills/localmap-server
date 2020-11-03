@@ -33,29 +33,35 @@ module.exports = async function (context, req) {
 };
 
 async function transferToBlob(context, fileName) {
-    context.log(`Transfer $fileName`)
+    context.log(`Transfer ${fileName}`);
     var blobService = azure.createBlobService(process.env.AzureWebJobsStorage);
     return new Promise((resolve, reject) => {
         fetch(fileName)
             .then(response => {
                 let contentType = response.headers.get("Content-Type");
-                if (contentType.startsWith("image")) {
-                    blobService.createBlockBlobFromStream("deepmap", name, response.body,
-                        response.headers.get("Content-Length"),
-                        { contentSettings: { contentType: contentType } },
-                        (e, r) => {
-                            if (e) { context.error(e); reject(e); }
-                            else { context.log("done"); resolve(r); }
-                        });
-                } else {
-                    response.text().then(content => {
-                        blobService.createBlockBlobFromText("deepmap", name, content,
+                let contentLength = response.headers.get("Content-Length");
+                context.log(`Transfer ${fileName} type: ${contentType}  length: ${contentLength}`);
+                try {
+                    if (contentType.startsWith("image")) {
+                        blobService.createBlockBlobFromStream("deepmap", name, response.body,
+                            contentLength,
                             { contentSettings: { contentType: contentType } },
                             (e, r) => {
                                 if (e) { context.error(e); reject(e); }
                                 else { context.log("done"); resolve(r); }
                             });
-                    })
+                    } else {
+                        response.text().then(content => {
+                            blobService.createBlockBlobFromText("deepmap", name, content,
+                                { contentSettings: { contentType: contentType } },
+                                (e, r) => {
+                                    if (e) { context.error(e); reject(e); }
+                                    else { context.log("done"); resolve(r); }
+                                });
+                        })
+                    }
+                } catch (err) {
+                    context.error(err);
                 }
             });
     });
