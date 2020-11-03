@@ -88,14 +88,14 @@ async function transferToBlob(context, name) {
                     let contentType = mime(name);
                     let contentLength = response.headers.get("Content-Length");
                     context.log(`Transfer ${name} type: ${contentType}  length: ${contentLength} download: ${downloadType}`);
-                    //if (contentType.startsWith("image")) {
+                    if (contentType.startsWith("image")) {
                         blobService.createBlockBlobFromStream(blobContainer,
                             name,
                             response.body,  // is a readable stream
                             contentLength,
                             { contentSettings: { contentType: contentType } },
                             resolver);
-                    /*} else {
+                    } else {
                         context.log("text");
                         response.text().then(content => {
                             context.log(`Uploading ${content.substr(0, 40)}...`);
@@ -105,7 +105,7 @@ async function transferToBlob(context, name) {
                                 { contentSettings: { contentType: contentType } },
                                 resolver);
                         });
-                    }*/
+                    }
                 } catch (err) {
                     context.error(err);
                     resolver(err, null);
