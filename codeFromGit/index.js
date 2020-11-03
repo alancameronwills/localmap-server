@@ -1,4 +1,5 @@
-/** Called by a GitHub webhook when code in the map client is updated.
+/** codeFromGit - Azure Function
+ * Called by a GitHub webhook when code in the map client is updated.
  * Copies the code to the blob "filestore."
  * 
  * Effect is that when you check the client code into GitHub master, 
@@ -89,6 +90,7 @@ async function transferToBlob(context, name) {
                     let contentLength = response.headers.get("Content-Length");
                     context.log(`Transfer ${name} type: ${contentType}  length: ${contentLength} download: ${downloadType}`);
                     if (contentType.startsWith("image")) {
+                        // (Can't use stream uploader for text. Length is wrong because of newlines and 2-byte chars.)
                         blobService.createBlockBlobFromStream(blobContainer,
                             name,
                             response.body,  // is a readable stream
@@ -96,9 +98,8 @@ async function transferToBlob(context, name) {
                             { contentSettings: { contentType: contentType } },
                             resolver);
                     } else {
-                        context.log("text");
                         response.text().then(content => {
-                            context.log(`Uploading ${content.substr(0, 40)}...`);
+                            context.log(`Uploading text ${content.substr(0, 40)}...`);
                             blobService.createBlockBlobFromText(blobContainer,
                                 name,
                                 content, // is a string
@@ -137,17 +138,19 @@ async function createBlob(azureCreateFn, container, name, content, length, setti
 
 function mime(filename) {
     try {
-        var ex = filename.match(/\.[^.]*$/)[0];
+        var ex = filename.match(/\.[^.]*$/)[0].toLowerCase();
         if (ex == ".js") return "application/javascript";
         if (ex == ".html") return "text/html";
         if (ex == ".htm") return "text/html";
+        if (ex == ".txt") return "text/plain";
         if (ex == ".md") return "text/markdown";
         if (ex == ".js") return "application/javascript";
         if (ex == ".json") return "application/json";
         if (ex == ".css") return "text/css";
         if (ex == ".ico") return "image/x-icon";
-        if (ex == ".css") return "text/css";
-        if (ex == ".ico") return "image/x-icon";
+        if (ex == ".pdf") return "application/pdf";
+        if (ex == ".gif") return "image/gif";
+        if (ex == ".mp3") return "audio/mpeg";
         if (ex == ".png") return "image/png";
         if (ex == ".jpg") return "image/jpeg";
         if (ex == ".jpeg") return "image/jpeg";
