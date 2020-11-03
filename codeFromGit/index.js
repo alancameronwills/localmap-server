@@ -38,10 +38,10 @@ async function transferToBlob(context, fileName) {
     return new Promise((resolve, reject) => {
         fetch(fileName)
             .then(response => {
-                let contentType = response.headers.get("Content-Type");
-                let contentLength = response.headers.get("Content-Length");
-                context.log(`Transfer ${fileName} type: ${contentType}  length: ${contentLength}`);
                 try {
+                    let contentType = response.headers.get("Content-Type");
+                    let contentLength = response.headers.get("Content-Length");
+                    context.log(`Transfer ${fileName} type: ${contentType}  length: ${contentLength}`);
                     if (contentType.startsWith("image")) {
                         blobService.createBlockBlobFromStream("deepmap", name, response.body,
                             contentLength,
