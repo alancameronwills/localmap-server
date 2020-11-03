@@ -32,10 +32,10 @@ module.exports = async function (context, req) {
 
 };
 
-async function transferToBlob(context, fileName) {
+async function transferToBlob(context, name) {
     let filePath = "https://raw.githubusercontent.com/alancameronwills/localmap/master/" + fileName;
 
-    context.log(`Transfer ${fileName}`);
+    context.log(`Transfer ${name}`);
     var blobService = azure.createBlobService(process.env.AzureWebJobsStorage);
     return new Promise((resolve, reject) => {
         context.log(`fetch(${filePath})`);
@@ -44,7 +44,7 @@ async function transferToBlob(context, fileName) {
                 try {
                     let contentType = response.headers.get("Content-Type");
                     let contentLength = response.headers.get("Content-Length");
-                    context.log(`Transfer ${fileName} type: ${contentType}  length: ${contentLength}`);
+                    context.log(`Transfer ${name} type: ${contentType}  length: ${contentLength}`);
                     if (contentType.startsWith("image")) {
                         blobService.createBlockBlobFromStream("deepmap", name, response.body,
                             contentLength,
@@ -54,7 +54,9 @@ async function transferToBlob(context, fileName) {
                                 else { context.log("done"); resolve(r); }
                             });
                     } else {
+                        context.log("text");
                         response.text().then(content => {
+                            context.log(`Uploading...${content.substr(0,30)}`)
                             blobService.createBlockBlobFromText("deepmap", name, content,
                                 { contentSettings: { contentType: contentType } },
                                 (e, r) => {
