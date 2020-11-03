@@ -1,4 +1,5 @@
-let request = require('request');
+let request = require('request');    // xxxxxxx
+let fetch = require("node-fetch");
 let azure = require('azure-storage');
 
 module.exports = async function (context, req) {
@@ -19,14 +20,46 @@ module.exports = async function (context, req) {
     for (var i = 0; i < files.length; i++) {
         // Get the updated file
         try {
+            await transferToBlob(context, files[i]);
+            /*
             let content = await getFile(files[i]);
             // Upload to store
             await sendToBlob(files[i], content, context);
+            */
         } catch (err) { context.log(err); }
     }
 
 
 };
+
+async function transferToBlob(context, fileName) {
+    context.log(`Transfer $fileName`)
+    var blobService = azure.createBlobService(process.env.AzureWebJobsStorage);
+    return new Promise((resolve, reject) => {
+        fetch(fileName)
+            .then(response => {
+                let contentType = response.headers.get("Content-Type");
+                if (contentType.startsWith("image")) {
+                    blobService.createBlockBlobFromStream("deepmap", name, response.body,
+                        response.headers.get("Content-Length"),
+                        { contentSettings: { contentType: contentType } },
+                        (e, r) => {
+                            if (e) { context.error(e); reject(e); }
+                            else { context.log("done"); resolve(r); }
+                        });
+                } else {
+                    response.text().then(content => {
+                        blobService.createBlockBlobFromText("deepmap", name, content,
+                            { contentSettings: { contentType: contentType } },
+                            (e, r) => {
+                                if (e) { context.error(e); reject(e); }
+                                else { context.log("done"); resolve(r); }
+                            });
+                    })
+                }
+            });
+    });
+}
 
 async function sendToBlob(name, content, context) {
     context.log("sendToBlob " + name + "  " + content.length);
