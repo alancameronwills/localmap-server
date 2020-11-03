@@ -33,10 +33,13 @@ module.exports = async function (context, req) {
 };
 
 async function transferToBlob(context, fileName) {
+    let filePath = "https://raw.githubusercontent.com/alancameronwills/localmap/master/" + fileName;
+
     context.log(`Transfer ${fileName}`);
     var blobService = azure.createBlobService(process.env.AzureWebJobsStorage);
     return new Promise((resolve, reject) => {
-        fetch(fileName)
+        context.log(`fetch(${filePath})`);
+        fetch(filePath)
             .then(response => {
                 try {
                     let contentType = response.headers.get("Content-Type");
@@ -62,7 +65,12 @@ async function transferToBlob(context, fileName) {
                     }
                 } catch (err) {
                     context.error(err);
+                    reject(err);
                 }
+            })
+            .catch (err => {
+                context.err(err);
+                reject(err);
             });
     });
 }
