@@ -33,7 +33,7 @@ module.exports = async function (context, req) {
 };
 
 async function transferToBlob(context, name) {
-    let filePath = "https://raw.githubusercontent.com/alancameronwills/localmap/master/" + fileName;
+    let filePath = "https://raw.githubusercontent.com/alancameronwills/localmap/master/" + name;
 
     context.log(`Transfer ${name}`);
     var blobService = azure.createBlobService(process.env.AzureWebJobsStorage);
