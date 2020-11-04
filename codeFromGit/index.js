@@ -34,6 +34,7 @@ module.exports = async function (context, req) {
         bits[kv[0]] = v;
     }
     let payload = JSON.parse(bits.payload);
+    context.log(`Trigger from ${payload.repository.full_name}/${payload.repository.default_branch}`);
     let gitPath = `https://raw.githubusercontent.com/${payload.repository.full_name}/${payload.repository.default_branch}/`;
     // This doesn't deal with deletes. If you delete or rename an item, use 
     // Azure Storage Explorer to remove it.
