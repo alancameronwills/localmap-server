@@ -14,9 +14,6 @@
  * use Azure Storage Explorer to the remove old files from the blob container.
  */
 
-// Where to get the files from on Git. Note should be 'raw':
-const gitPath = "https://raw.githubusercontent.com/alancameronwills/localmap/master/";
-
 // Azure account key is taken from the environment variable AzureWebJobsStorage.
 // In that account, this is the blob location:
 const blobContainer = "deepmap";
@@ -37,16 +34,19 @@ module.exports = async function (context, req) {
         bits[kv[0]] = v;
     }
     let payload = JSON.parse(bits.payload);
+    let gitPath = `https://raw.githubusercontent.com/${payload.repository.full_name}/${payload.repository.default_branch}/`;
     // This doesn't deal with deletes. If you delete or rename an item, use 
     // Azure Storage Explorer to remove it.
     let commit = payload.head_commit;
     let fileNames = commit.modified.concat(commit.added);
+    let prefix = "";
+    if (payload.repository.id != 191463966) prefix = "2/";
 
     // File names are relative: e.g. index.html, img/m3.png
 
     for (var i = 0; i < fileNames.length; i++) {
         try {
-            await transferToBlob(context, fileNames[i]);
+            await transferToBlob(context, gitPath, fileNames[i], prefix);
         } catch (err) { context.log(err); }
     }
 
@@ -74,7 +74,7 @@ function decode(s) {
  * @param {*} context - for logging
  * @param {*} name - relative file path, e.g. index.html or img/m3.png
  */
-async function transferToBlob(context, name) {
+async function transferToBlob(context, gitPath, name, prefix="") {
     let filePath = gitPath + name;
     context.log(`Transfer ${name}`);
     var blobService = azure.createBlobService(process.env.AzureWebJobsStorage);
@@ -92,7 +92,7 @@ async function transferToBlob(context, name) {
                     if (contentType.startsWith("image")) {
                         // (Can't use stream uploader for text. Length is wrong because of newlines and 2-byte chars.)
                         blobService.createBlockBlobFromStream(blobContainer,
-                            name,
+                            prefix+name,
                             response.body,  // is a readable stream
                             contentLength,
                             { contentSettings: { contentType: contentType } },
@@ -101,7 +101,7 @@ async function transferToBlob(context, name) {
                         response.text().then(content => {
                             context.log(`Uploading text ${content.substr(0, 40)}...`);
                             blobService.createBlockBlobFromText(blobContainer,
-                                name,
+                                prefix+name,
                                 content, // is a string
                                 { contentSettings: { contentType: contentType } },
                                 resolver);
@@ -128,14 +128,9 @@ function promisify(codeTakingResolver) {
     });
 }
 
-async function createBlob(azureCreateFn, container, name, content, length, settings) {
-    return new Promise((resolve, reject) => {
-        azureCreateFn(container, name, content, length, settings,
-            resolver(resolve, reject)
-        );
-    });
-}
-
+/** Return the mime type based on the filename extension.
+ *  Needed because mime type from git stream isn't sufficiently accurate.
+ */
 function mime(filename) {
     try {
         var ex = filename.match(/\.[^.]*$/)[0].toLowerCase();
