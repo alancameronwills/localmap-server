@@ -39,9 +39,10 @@ module.exports = async function (context, req) {
     // This doesn't deal with deletes. If you delete or rename an item, use 
     // Azure Storage Explorer to remove it.
     let commit = payload.head_commit;
+    if (!commit || !payload.repository) {context.status="400"; return;}
     let fileNames = commit.modified.concat(commit.added);
     let prefix = "";
-    if (req.query.sub && /^\d+$/.test(req.query.substr(0,1))) prefix = "/" + req.query.sub;
+    if (req.query && req.query.sub && /^\d+$/.test(req.query.substr(0,1))) prefix = "/" + req.query.sub;
     if (payload.repository.id != 191463966) prefix = "2/";
 
     // File names are relative: e.g. index.html, img/m3.png
