@@ -36,7 +36,8 @@ module.exports = async function (context, req) {
     let payload = bits.payload && JSON.parse(bits.payload) || "";
     if (!payload || !payload.repository || !payload.head_commit) {
         context.log("Bad request");
-        context.status="400"; return;
+        context.res.status="400";
+        return;
     }
     context.log(`Trigger from ${payload.repository.full_name}/${payload.repository.default_branch}`);
     let gitPath = `https://raw.githubusercontent.com/${payload.repository.full_name}/${payload.repository.default_branch}/`;
