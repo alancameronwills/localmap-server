@@ -46,7 +46,7 @@ module.exports = async function (context, req) {
     let commit = payload.head_commit;
     let fileNames = commit.modified.concat(commit.added);
     let prefix = "";
-    if (req.query && req.query.sub && /^\d+$/.test(req.query.substr(0,1))) prefix = "/" + req.query.sub;
+    if (req.query && req.query.sub && /^\d+$/.test(req.query.sub.substr(0,1))) prefix = "/" + req.query.sub;
     if (payload.repository.id != 191463966) prefix = "2/";
 
     // File names are relative: e.g. index.html, img/m3.png
