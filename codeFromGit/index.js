@@ -33,13 +33,16 @@ module.exports = async function (context, req) {
         var v = decode(kv[1]);
         bits[kv[0]] = v;
     }
-    let payload = JSON.parse(bits.payload);
+    let payload = bits.payload && JSON.parse(bits.payload) || "";
+    if (!payload || !payload.repository || !payload.head_commit) {
+        context.log("Bad request");
+        context.status="400"; return;
+    }
     context.log(`Trigger from ${payload.repository.full_name}/${payload.repository.default_branch}`);
     let gitPath = `https://raw.githubusercontent.com/${payload.repository.full_name}/${payload.repository.default_branch}/`;
     // This doesn't deal with deletes. If you delete or rename an item, use 
     // Azure Storage Explorer to remove it.
     let commit = payload.head_commit;
-    if (!commit || !payload.repository) {context.status="400"; return;}
     let fileNames = commit.modified.concat(commit.added);
     let prefix = "";
     if (req.query && req.query.sub && /^\d+$/.test(req.query.substr(0,1))) prefix = "/" + req.query.sub;
@@ -69,7 +72,7 @@ module.exports = async function (context, req) {
 };
 
 function decode(s) {
-    return s.replace(/%3A/g, ":").replace(/%2F/g, "/").replace(/%2C/g, ",").replace(/\+/g, " ").replace(/%20/g, " ");
+    return s && s.replace(/%3A/g, ":").replace(/%2F/g, "/").replace(/%2C/g, ",").replace(/\+/g, " ").replace(/%20/g, " ");
 }
 
 /**
