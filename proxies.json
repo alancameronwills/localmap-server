@@ -17,7 +17,7 @@
             "matchCondition": {
                 "route": "/"
             },
-            "backendUri": "https://deepmap.blob.core.windows.net/deepmap/index.html"
+            "backendUri": "https://deepmap.blob.core.windows.net/deepmap/fix.html"
         }
     }
 }
