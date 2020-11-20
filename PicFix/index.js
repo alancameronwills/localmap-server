@@ -25,7 +25,7 @@ module.exports = async function (context, req) {
             if (e.contentSettings.contentType.startsWith("image")) {
                 got += "\n" + e.name + "\t" + e.contentLength + "\t" + e.contentSettings.contentType ;
                 count++;
-                await processBlob(container, e.name);
+                //await processBlob(container, e.name);
             }
             if (i > 3) break;
         }
