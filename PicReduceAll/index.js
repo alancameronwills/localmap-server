@@ -1,9 +1,18 @@
-/** Make reduced-size copies of all current photos in a separate folder 
+/** Make reduced-size copies of all current photos in a separate folder.
+ * Does a check of all images and makes reduced copies of any new ones.
+ * Doesn't copy non-image files such as PDFs and audio that users may have uploaded to media folder.
+ * 
+ * Can be called regularly. See PicReduceTimer.
+ * 
+ * URL query parameters, all optional:
  * @param target=smedia : destination folder name
  * @param source=media : source folder name
  * @param size=600 : max height and width
- * @param quality=50
+ * @param quality=50 : JPEG quality index between 0 and 100.
 */
+
+// These packages included in ../package.json:
+
 const AzureStorageBlob = require("@azure/storage-blob");
 const stream = require('stream');
 const jimp = require('jimp');
