@@ -7,6 +7,7 @@
     "author": "Alan Cameron Wills",
     "files": ["**.js", "**.json"],
     "dependencies": {
+        "@azure/storage-blob": "^12.3.0",
         "azure-storage" : "",
         "https" : "",
         "jimp": "",
