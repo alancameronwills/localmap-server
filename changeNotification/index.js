@@ -8,7 +8,7 @@ module.exports = async function (context, myTimer, table) {
     //send(context, ["alancameronwills@gmail.com"], "Test <span style='color:green'>stuff</span>");
 
     summarize(context, table, "", ["span@pantywylan.org"], true);
-    summarize(context, table, "Folio", ["alan@pantywylan.org", "chair@foliosuttoncoldfield.org.uk", "john@foliosuttoncoldfield.org.uk"], false);
+    summarize(context, table, "Folio", ["alan@pantywylan.org", "chair@foliosuttoncoldfield.org.uk"], false);
 
 };
 
