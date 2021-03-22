@@ -7,10 +7,10 @@ let azure = require('azure-storage');
 module.exports = function (context, req) {
     let connectionString = process.env.AzureWebJobsStorage;
     let tableService = azure.createTableService(connectionString);
-    //context.log(JSON.stringify(req.body));
     if (req.body.RowKey) {
         req.body.LastModified = Date.now();
         context.log("upload " + req.body.RowKey);
+        context.log(JSON.stringify(req.headers["x-ms-client-principal-id"]));
         // context.log(JSON.stringify(req.headers));
         tableService.insertOrReplaceEntity('places', req.body, (error, result, response) => {
             context.res.status= error ? 401 : 204;
