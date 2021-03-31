@@ -87,7 +87,7 @@ function checkValidationKey(context, tableService, row, token) {
  * @param {*} key The RowKey of the new or existing record with the user's email address
  */
 function setValidationKey(context, tableService, row, email, message) {
-    let token = row.validation._ || ("" + Date.now()).substr(-4);
+    let token = (row.validation && row.validation._) || ("" + Date.now()).substr(-4);
     let link = "https://deepmap.azurewebsites.net/validate-email.htm?token=" + token;
     let name = row.FullName ? row.FullName._ : "";
     let tokenMessage = `Hi ${name},\n\nPlease use this code to validate your email address: ${token}` + "\n\nBest wishes\nDeep Map\n";
