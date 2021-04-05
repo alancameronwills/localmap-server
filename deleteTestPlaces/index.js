@@ -22,12 +22,11 @@ module.exports = function (context, req) {
 
     function deleteSet(result) {
         let batch = new azure.TableBatch();
-        /*
-        result.array.forEach(element => {
+            result.forEach(element => {
             if (element.PartitionKey && element.RowKey && element.RowKey._ != "320501040707199024165") {
                 element.PartitionKey._ = process.env.TestProjectId;
                 batch.deleteEntity (element);
-                /*
+                
                 let media = JSON.parse(element.Media._);
                 media.forEach(item => {
                     blobService.deleteBlobIfExists("deepmap", "media/" + item.id, (err, res) =>{
@@ -42,7 +41,7 @@ module.exports = function (context, req) {
             context.res.body.batchResult = res2;
             context.done();
         })
-        */
+        
        context.done();
     }
  };
