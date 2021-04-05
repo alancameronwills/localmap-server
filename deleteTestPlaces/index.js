@@ -13,10 +13,11 @@ module.exports = function (context, req) {
         if(error) {
             context.error(error);
             context.res.status=401;
+            context.done();
         } else {
             context.res.body = result.entries;
+            deleteSet(result);
         }
-        context.done();
     });
 
     function deleteSet(result) {
@@ -27,31 +28,15 @@ module.exports = function (context, req) {
                 batch.deleteEntity (element);
                 let media = JSON.parse(element.Media._);
                 media.forEach(item => {
-                    blobService.deleteBlobIfExists("deepmap", "media/" + item.id, (err, result) =>{
-                        
+                    blobService.deleteBlobIfExists("deepmap", "media/" + item.id, (err, res) =>{
+
                     });
                 })
             }
         });
+        tableService.executeBatch("places", batch, (error, res2, response) => {
+            context.res.body += res2;
+            context.done();
+        })
     }
-
-    /*
-    if (req.query.partitionKey && req.query.RowKey && req.headers["x-ms-client-principal-id"]) {
-        context.log("delete "+ req.query.partitionKey + " | " + req.query.rowKey + " user " + req.headers["x-ms-client-principal-id"]);
-        tableService.deleteEntity("places", {
-                PartitionKey: { '_' : req.query.partitionKey}, 
-                RowKey: { '_' : req.query.rowKey}
-            },
-            function(error, response){
-                if(error) {
-                    context.error(error);
-                    context.res.status=401;
-                }
-                context.done();
-            }
-        );
-    } else {
-        context.res.status= 400;
-        context.done();
-    */
  };
