@@ -22,7 +22,7 @@ module.exports = function (context, req) {
 
     function deleteSet(result) {
         let batch = new azure.TableBatch();
-        if (!result.entries) { context.done(); return; }
+        if (!result.entries) { context.res.body.ee = "f2"; context.done(); return; }
             result.entries.forEach(element => {
                 
             if (element.PartitionKey && element.RowKey && element.RowKey._ != "320501040707199024165") {
@@ -39,13 +39,12 @@ module.exports = function (context, req) {
             }
             
         });
-        /*
+        
         tableService.executeBatch("places", batch, (error, res2, response) => {
             context.res.body.batchResult = res2;
             context.done();
         })
-        */
         
-       context.done();
+        
     }
  };
