@@ -22,7 +22,8 @@ module.exports = function (context, req) {
 
     function deleteSet(result) {
         let batch = new azure.TableBatch();
-            result.forEach(element => {
+        if (!result.entries) { context.done(); return; }
+            result.entries.forEach(element => {
                 /*
             if (element.PartitionKey && element.RowKey && element.RowKey._ != "320501040707199024165") {
                 element.PartitionKey._ = process.env.TestProjectId;
