@@ -27,12 +27,14 @@ module.exports = function (context, req) {
             if (element.PartitionKey && element.RowKey && element.RowKey._ != "320501040707199024165") {
                 element.PartitionKey._ = process.env.TestProjectId;
                 batch.deleteEntity (element);
+                /*
                 let media = JSON.parse(element.Media._);
                 media.forEach(item => {
                     blobService.deleteBlobIfExists("deepmap", "media/" + item.id, (err, res) =>{
 
                     });
                 })
+                */
             }
         });
         /*
