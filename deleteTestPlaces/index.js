@@ -21,13 +21,13 @@ module.exports = function (context, req) {
     });
 
     function deleteSet(result) {
-        context.res.body.push("deleting");
+        context.log("deleting");
         let batch = new azure.TableBatch();
         if (!result.entries) { context.res.body.push("f2"); context.done(); return; }
             result.entries.forEach(element => {
                 
             if (element.PartitionKey && element.RowKey && element.RowKey._ != "320501040707199024165") {
-                context.res.body.push(">> " + element.RowKey);
+                context.log(">> " + element.RowKey);
                 element.PartitionKey._ = process.env.TestProjectId;
                 batch.deleteEntity (element);
                 
@@ -43,8 +43,8 @@ module.exports = function (context, req) {
         });
         
         tableService.executeBatch("places", batch, (error, res2, response) => {
-            context.res.body.push("XX");
-            context.res.body.push(res2);
+            context.log("XX");
+            context.log(res2);
             context.done();
         })
         
