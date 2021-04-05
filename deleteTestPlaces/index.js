@@ -41,7 +41,12 @@ module.exports = function (context, req) {
             }
             
         });
-        
+        if (batch.size()==0) {
+            context.log("No elements");
+            context.done();
+        } else {
+            context.log("Elements: " + batch.size());
+        }
         tableService.executeBatch("places", batch, (error, res2, response) => {
             context.log("XX");
             context.log(res2);
