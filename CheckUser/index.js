@@ -10,9 +10,11 @@ module.exports = function (context, req) {
 
     // https://docs.microsoft.com/en-us/azure/cosmos-db/table-storage-how-to-use-nodejs#delete-an-entity
 
-    let principal = (req.query && req.query.principal) || req.headers["x-ms-client-principal-name"] || "";
-    let id = (req.query && req.query.id) || req.headers["x-ms-client-principal-id"] || "";
-    let idp = (req.query && req.query.idp) || req.headers["x-ms-client-principal-idp"] || "email";
+    let project = req.query && req.query.project || "";
+    let isTest =  project == process.env.TestProjectId;
+    let principal = (req.query && req.query.principal) || req.headers["x-ms-client-principal-name"] || (isTest ? "TestUser" : "");
+    let id = (req.query && req.query.id) || req.headers["x-ms-client-principal-id"] || (isTest ? "TestUser" : "");
+    let idp = (req.query && req.query.idp) || req.headers["x-ms-client-principal-idp"] || (isTest ? "TestUser" : "email");
     let name = (req.query && req.query.name) || (principal.indexOf("@") < 0 ? principal : "");
     let email = (req.query && req.query.email) || (principal.indexOf("@") < 0 ? "" : principal);
     let display = (req.query && req.query.display) || "";
