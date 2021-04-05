@@ -12,7 +12,7 @@ module.exports = function (context, req) {
             context.error(error);
             context.res.status=401;
         } else {
-            context.res.body = result.body;
+            context.res.body = result.entries;
         }
         context.done();
     });
