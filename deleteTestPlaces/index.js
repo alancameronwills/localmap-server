@@ -22,6 +22,7 @@ module.exports = function (context, req) {
 
     function deleteSet(result) {
         let batch = new azure.TableBatch();
+        /*
         result.array.forEach(element => {
             if (element.RowKey._ != "320501040707199024165") {
                 element.PartitionKey._ = process.env.TestProjectId;
@@ -38,5 +39,7 @@ module.exports = function (context, req) {
             context.res.body += res2;
             context.done();
         })
+        */
+       context.done();
     }
  };
