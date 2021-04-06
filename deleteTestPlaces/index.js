@@ -44,6 +44,7 @@ module.exports = function (context, req) {
         if (batch.size()==0) {
             context.log("No elements");
             context.done();
+            return;
         } else {
             context.log("Elements: " + batch.size());
         }
