@@ -17,6 +17,7 @@ module.exports = function (context, req) {
         });
     }
     else {
+        context.log("upload fail " + req.body.RowKey + ", " + req.headers["x-ms-client-principal-id"] );
         context.res.status= 400;
         context.done();
     }
