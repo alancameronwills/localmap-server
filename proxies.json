@@ -7,6 +7,12 @@
             },
             "backendUri": "https://deepmap.blob.core.windows.net/deepmap/{file}"
         },
+        "signed": {
+            "matchCondition": {
+                "route": "/signed-in"
+            },
+            "backendUri": "https://deepmap.blob.core.windows.net/deepmap/signed-in.htm"
+        },
         "api": {
             "matchCondition": {
                 "route": "/api/{file}"
