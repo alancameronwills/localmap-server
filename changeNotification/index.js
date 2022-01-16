@@ -14,15 +14,15 @@ module.exports = async function (context, myTimer, table) {
 
 function summarize(context, table, project, recipients, doViewers) {
     var timeStamp = Date.now();
-    context.log("1 " + table.length);
+    //context.log("1 " + table.length);
     //var outtable = table.filter(t => t.Text.indexOf("kiln") >= 0);
     var prefix = "https://deep-map.azurewebsites.net/?place=";
-    var outtable = table.filter(t => t.LastModified > timeStamp - 2 * 86400000 && (!project || project == t.PartitionKey))
+    var outtable = table.filter(t => t.LastModified > timeStamp - 7 * 86400000 && (!project || project == t.PartitionKey))
         .map(t => { return { u: t.User, t: trunc(t.Text), l: prefix + t.PartitionKey.replace(" ", "+") + "%7C" + t.RowKey }; });
     // https://deep-map.azurewebsites.net/?place=Garn Fawr|2-5520060970700762
     //context.log("length " + outtable.length);
-    var result = "<h1>" + project + " Deep map</h1><p>New and updated places in the past 48h</p>";
-    if (outtable.length == 0) { result += "No contributions to the map in the past 24h."; }
+    var result = "<h1>" + project + " Deep map</h1><p>New and updated places in the past week</p>";
+    if (outtable.length == 0) { result += "No contributions to the map in the past week."; }
     else {
         result += "<table>";
         for (var i = 0; i < outtable.length; i++) {
@@ -36,9 +36,9 @@ function summarize(context, table, project, recipients, doViewers) {
     if (doViewers) {
 
         // Check viewers
-        let reqbody = '{"query" : "customEvents | where timestamp > ago(1d) | summarize by user_Id '
+        let reqbody = '{"query" : "customEvents | where timestamp > ago(7d) | summarize by user_Id '
             + '| join kind= leftanti  '
-            + '( customEvents | where timestamp < ago(1d) | summarize by user_Id '
+            + '( customEvents | where timestamp < ago(7d) | summarize by user_Id '
             + ') on user_Id"}';
         let uri = "https://api.applicationinsights.io/v1/apps/{app-id}/query".
             replace(/{app-id}/, process.env["APPID"]);
@@ -58,7 +58,7 @@ function summarize(context, table, project, recipients, doViewers) {
                 try {
                     let b = JSON.parse(resbody);
                     if (b.tables.length) {
-                        result += "<p><b>" + b.tables[0].rows.length + "</b> viewers yesterday that weren't seen in past month</p>";
+                        result += "<p><b>" + b.tables[0].rows.length + "</b> viewers in the past week that weren't seen in past month</p>";
                     }
                     else result += error;
                 } catch (eee) { context.log(eee); }
@@ -101,10 +101,12 @@ function send(context, recipients, message) {
             ]
         }
     });
+    /*
     context.log("3");
     sg.API(request, (a, b, c) => {
         context.log("4");
         context.log("[" + a + "|" + b + "|" + c);
     });
+    */
 }
 
