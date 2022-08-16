@@ -13,6 +13,7 @@ module.exports = function (context, req) {
         // context.log(JSON.stringify(req.headers));
         tableService.insertOrReplaceEntity('places', req.body, (error, result, response) => {
             context.res.status= error ? 401 : 204;
+            if (error) context.log("upload fail table insert: " + error);
             context.done();
         });
     }
