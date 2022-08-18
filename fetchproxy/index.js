@@ -2,19 +2,14 @@
     const fetch = require("node-fetch");  
     module.exports = async function (context, req) {
         await fetch (req.query.url)
-        .then(data => data.blob()
         .then (data =>
             {  
                 context.log("1");
-             //parseString(data, (err, result) => {
-               // context.log("2");
-                 context.res = {
-                    //status: 200, /* Defaults to 200 */
-                    body: data
+                context.res = {
+                    body: data.body
                 };
-             //});
             }
-        ))
+        )
         .catch (error => {context.res = {status:400}; context.log("X "+error);})
     };
     
