@@ -6,10 +6,7 @@
         .then (blob =>
             {  
                 context.log("1");
-                context.res = {
-                    body: blob,
-                    headers: data.headers
-                };
+                context.res.send(blob);
             }
         ))
         .catch (error => {context.res = {status:400}; context.log("X "+error);})
