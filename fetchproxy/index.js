@@ -2,7 +2,7 @@
     const fetch = require("node-fetch");  
     module.exports = async function (context, req) {
         await fetch (req.query.url)
-        .then((data) => {context.log("0"); return data.text();})
+        .then(data => data.blob()
         .then (data =>
             {  
                 context.log("1");
@@ -14,7 +14,7 @@
                 };
              //});
             }
-        )
+        ))
         .catch (error => {context.res = {status:400}; context.log("X "+error);})
     };
     
