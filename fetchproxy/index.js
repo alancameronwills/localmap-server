@@ -10,7 +10,7 @@
                 context.res.isRaw = true;
                 context.res.body = blob;
                 context.res.headers.set("content-type","image/jpeg");
-                context.res.send(blob);
+                context.res.done();
             });
         })
         .catch (error => {context.res = {status:400}; context.log("X "+error);})
