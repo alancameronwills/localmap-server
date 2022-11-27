@@ -3,7 +3,7 @@
     "proxies": {
         "api": {
             "matchCondition": {
-                "route": "/a/{file}"
+                "route": "/api/{file}"
             },
             "backendUri": "https://localhost/api/{file}"
         },
